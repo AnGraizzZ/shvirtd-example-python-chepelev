@@ -1,0 +1,21 @@
+# ---------- Этап 1: builder — ставим зависимости ----------
+FROM python:3.12-slim AS builder
+
+WORKDIR /app
+COPY requirements.txt .
+# БЕЗ --target: pip сам положит всё в правильные места
+RUN pip install --no-cache-dir -r requirements.txt
+
+# ---------- Этап 2: финальный образ ----------
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Копируем весь /usr/local из builder — и бинарники, и библиотеки
+COPY --from=builder /usr/local /usr/local
+
+# Копируем код приложения
+COPY . .
+
+# Запускаем приложение
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000"]
