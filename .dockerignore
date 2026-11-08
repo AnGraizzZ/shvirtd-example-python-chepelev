@@ -5,3 +5,6 @@ Dockerfile
 *.pdf
 *.yaml
 img/
+*png
+terraform/
+*.tf
